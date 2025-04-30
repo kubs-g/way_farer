@@ -16,8 +16,18 @@
     <a href="Signup.html">Signup</a>
     <a href="Admin.html">Admin</a>
 </nav>
-<h1>Your Bookings</h1>
-<div id="bookings-list"></div>
+<div class="signup-container">
+    <h1>Login</h1>
+<form class="login-form">
+   <label>Email:</label>
+        <input type="email" id="email" name="email" required>
+   <label>Password:</label>
+        <input type="password" id="password" name="password" required>
+   <button type="submit" onclick="login()" id="login">Login</button>
+
+</form>
+
+</div>
 
 <script src="main.js"></script>
 </body>

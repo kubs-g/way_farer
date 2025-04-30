@@ -181,3 +181,27 @@ footer {
 .trip button:hover {
     background-color: #0056b3;
 }
+
+.booking-card{
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    max-width: 600px;
+    text-align: left;
+}
+.cancel-booking {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 1rem;
+}
+
+.cancel-booking:hover {
+    background-color: #0056b3;
+}
