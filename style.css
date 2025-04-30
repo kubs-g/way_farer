@@ -205,3 +205,85 @@ footer {
 .cancel-booking:hover {
     background-color: #0056b3;
 }
+
+@media (min-width: 600px) and (max-width: 1024px) {
+    nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    article h1 {
+        font-size: 2.5rem;
+    }
+
+    article p {
+        font-size: 1.5rem;
+    }
+
+    article button a {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 599px) {
+    nav {
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem 0;
+    }
+
+    nav a {
+        margin: 0.5rem 0;
+        font-size: 1rem;
+    }
+
+    article {
+        padding: 1rem;
+    }
+
+    article h1 {
+        font-size: 1.8rem;
+    }
+
+    article p {
+        font-size: 1rem;
+    }
+
+    article button {
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
+    }
+
+    img {
+        max-width: 90%;
+        margin: 2rem auto;
+    }
+
+    .signup-container {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .trip {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+
+    .trip h2 {
+        font-size: 1.2rem;
+    }
+
+    .trip p {
+        font-size: 0.9rem;
+    }
+
+    .trip button {
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
+    }
+
+    footer {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+}
