@@ -7,7 +7,7 @@ const Port = 4000
 
 const {isAdmin} = require('./middleware.js');
 const jwt = require('jsonwebtoken');
-
+require('dotenv').config();
 
 const app = express();
 app.use(Cors());
@@ -23,7 +23,7 @@ let bookingsData = [{"id":"1","userId":"1","tripId":"1"}]
 app.post('/register',(req,res)=>{
  const {username,email,password,address,id, role = "user"} = req.body;
    
-let userExists = users.find((user)=>{ user.email === email});
+ let userExists = users.find((user) => user.email === email);
   if(userExists){
   return    res.status(400).send("User already exists")
     }
@@ -42,23 +42,31 @@ const newUser = {
 }
 );
 
-app.post('/login',(req,res)=>{
-    const {email,password} = req.body;
-let userExists = users.find((user)=>{user.email ===email});
-if(!userExists){
-    res.status(400).send("User not found.please register");
-}
-const passwordcompare = bcrypt.compareSync(password, userExists.password);
-if(!passwordcompare){
-    res.status(400).send("Incorrect password");
-}
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
 
-const  token = jwt.sign({id:userExists.id,email:userExists.email,role:userExists.role},process.env.JWT_SECRET,{expiresIn:'1h'});
-res.status(200).json({
-    message: "Login successful",
-    token,
-});
-   
+    
+const userExists = users.find((user) => user.email === email);
+    if (!userExists) {
+        return res.status(404).json({ error: "User not found. Please register." });
+    }
+
+  
+ const passwordCompare = bcrypt.compareSync(password, userExists.password);
+    if (!passwordCompare) {
+        return res.status(401).json({ error: "Incorrect password." });
+    }
+
+const token = jwt.sign(
+        { id: userExists.id, email: userExists.email, role: userExists.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+    );
+
+ res.status(200).json({
+        message: "Login successful",
+        token,
+    });
 });
 
 app.get('/tripe', (req, res) => {
@@ -69,7 +77,10 @@ app.post('/admin',(req,res)=>{
     res.status(200).send("Welcome to the admin page");
 });
 
-app.post('/tripe',(req,res)=>{
+app.get('/users',(req,res)=>{
+    res.status(200).json(users);
+});
+app.post('/tripe',isAdmin,(req,res)=>{
     const {destination,date,Depature_time,id,price} = req.body;
 
    
@@ -84,10 +95,7 @@ const newTrip = {
     res.status(201).send("Trip created successfully");
 });
 
-app.get('/tripe',(req,res)=>{
-    res.status(200).json(tripedata);
-}
-);
+
 app.get('/tripe/:id', (req, res) => {
     const { id } = req.params;
     const tripe = tripedata.find((tripe) => tripe.id === id);
@@ -96,7 +104,7 @@ app.get('/tripe/:id', (req, res) => {
     }
     res.status(200).json(tripe);
 });
-app.delete('/tripe/:id', (req, res) => {
+app.delete('/tripe/:id',isAdmin, (req, res) => {
     const { id } = req.params;
     const tripe = tripedata.find((tripe) => tripe.id === id);
     if (!tripe) {
