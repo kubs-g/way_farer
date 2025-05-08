@@ -1,4 +1,4 @@
-const epress = require('express');
+const express = require('express');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const Cors = require('cors');
@@ -9,26 +9,28 @@ const {isAdmin} = require('./middleware.js');
 const jwt = require('jsonwebtoken');
 
 
-const app = epress();
+const app = express();
 app.use(Cors());
 app.use(bodyParser.json());
 
 
 let users = [{"username":"geri","email":"kubs@gmail.com","password":"123456","id":"1","role":"admin"}]
 
-const tripedata = [{"destination":"Eldoret >>> Nairobi","date":"2023-10-20","Depature-time":"12:00","price":"2000"}]
+let tripedata = [{ "id":"1","destination":"Eldoret >>> Nairobi","date":"2023-10-20","Depature_time":"12:00","price":"2000"}]
 
+let bookingsData = [{"id":"1","userId":"1","tripId":"1"}]
 
 app.post('/register',(req,res)=>{
- const {username,email,password,address, role = "user"} = req.body;
+ const {username,email,password,address,id, role = "user"} = req.body;
    
 let userExists = users.find((user)=>{ user.email === email});
   if(userExists){
-     res.status(400).send("User already exists")
+  return    res.status(400).send("User already exists")
     }
 const HashedPassword = bcrypt.hashSync(password, 2);
 
 const newUser = {
+       id:(users.length + 1).toString(),
         username,
         email,
         password: HashedPassword,
@@ -46,29 +48,33 @@ let userExists = users.find((user)=>{user.email ===email});
 if(!userExists){
     res.status(400).send("User not found.please register");
 }
-const passwordcompare = users.find((user)=>{user.password === password});
+const passwordcompare = bcrypt.compareSync(password, userExists.password);
 if(!passwordcompare){
     res.status(400).send("Incorrect password");
 }
-res.status(200).send("Login successful");
+
+const  token = jwt.sign({id:userExists.id,email:userExists.email,role:userExists.role},process.env.JWT_SECRET,{expiresIn:'1h'});
+res.status(200).json({
+    message: "Login successful",
+    token,
+});
    
 });
 
-
-app.get('/users', (req, res) => {
-    res.status(200).json(users);
-  
+app.get('/tripe', (req, res) => {
+    res.status(200).json(tripedata);
 });
-
 
 app.post('/admin',(req,res)=>{
     res.status(200).send("Welcome to the admin page");
 });
 
-app.post('/tripe',isAdmin,(req,res)=>{
-    const {destination,date,Depature_time,price} = req.body;
+app.post('/tripe',(req,res)=>{
+    const {destination,date,Depature_time,id,price} = req.body;
+
    
 const newTrip = {
+        id:(tripedata.length + 1).toString(),
         destination,
         date,
         Depature_time,
@@ -76,34 +82,78 @@ const newTrip = {
     }
     tripedata.push(newTrip);
     res.status(201).send("Trip created successfully");
-}
-);
+});
 
 app.get('/tripe',(req,res)=>{
     res.status(200).json(tripedata);
 }
 );
-app.get('/tripe/:id',(req,res)=>{
-   const {destination,date,Depature_time,price} = req.body;
-    const {id} = req.params;
-    const tripe = tripedata.find((tripe)=>{tripe.id === id});
-    if(!tripe){
-        res.status(404).send("Trip not found");
+app.get('/tripe/:id', (req, res) => {
+    const { id } = req.params;
+    const tripe = tripedata.find((tripe) => tripe.id === id);
+    if (!tripe) {
+        return res.status(404).send("Trip not found");
     }
     res.status(200).json(tripe);
-
 });
-
-app.delete('/tripe/:id',isAdmin,(req,res)=>{
-    const {id} = req.params;
-    const tripe = tripedata.find((tripe)=>{tripe.id === id});
-    if(!tripe){
-        res.status(404).send("Trip not found");
+app.delete('/tripe/:id', (req, res) => {
+    const { id } = req.params;
+    const tripe = tripedata.find((tripe) => tripe.id === id);
+    if (!tripe) {
+        return res.status(404).send("Trip not found");
     }
-    tripedata.splice(tripedata.indexOf(tripe),1);
-    res.status(200).send("Trip canceled successfully");
+   
+    tripedata = tripedata.filter((tripe) => tripe.id !== id);
+    res.status(200).send("Trip deleted successfully");
 });
 
+app.post('/bookings', (req, res) => {
+    const { userId, tripId ,seatNumber} = req.body;
+
+const tripeExist = tripedata.find((tripe) => tripe.id === tripId);
+    if (!tripeExist) {
+        return res.status(404).send("Trip not found");
+    }
+const seatTaken = bookingsData.find((booking) =>booking.tripId === tripId && booking.seatNumber === seatNumber);
+    if (seatTaken) {
+        return res.status(400).send("Seat already taken");
+    }
+    const newBooking = {
+        id: (bookingsData.length + 1).toString(), 
+        userId,
+        tripId,
+        seatNumber
+    };
+
+    bookingsData.push(newBooking);
+    res.status(201).send("Booking created successfully");
+}
+);
+
+app.get('/bookings', (req, res) => {
+    res.status(200).json(bookingsData);
+}); 
+
+
+app.get('/bookings/:id', (req, res) => {
+    const { id } = req.params;
+    const booking = bookingsData.find((booking) => booking.id === id);
+    if (!booking) {
+        return res.status(404).send("Booking not found");
+    }
+    res.status(200).json(booking);
+});
+
+
+app.delete('/bookings/:id', (req, res) => {
+    const { id } = req.params;
+    const booking = bookingsData.find((booking) => booking.id === id); 
+    if (!booking) {
+        return res.status(404).send("Booking not found");
+    }
+    bookingsData = bookingsData.filter((booking) => booking.id !== id);
+    res.status(200).send("Booking deleted successfully");
+});
 
 app.listen(Port , () => {
     console.log(`Server is running on port ${Port}`);
