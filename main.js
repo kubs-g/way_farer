@@ -15,7 +15,7 @@ const signup = () => {
         address: address
     }
   
-fetch("http://wayfarer-production.up.railway.app/register", {
+fetch("https://wayfarer-production.up.railway.app/register", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
@@ -52,7 +52,7 @@ const login = () => {
         email: email,
         password: password
     }
-fetch("http://wayfarer-production.up.railway.app/login", {
+fetch("https://wayfarer-production.up.railway.app/login", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
