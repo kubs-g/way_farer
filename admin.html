@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAYFARER-BOOKING SERCICES</title>
+   <link rel="stylesheet" href="style.css">
+
+    
+</head>
+<body>
+    <nav>
+    <a href="index.html">Home</a>
+    <a href="Tripe.html">Trips</a>
+    <a href="Bookings.html">Bookings</a>
+    <a href="Signup.html">Signup</a>
+    <a href="Admin.html">Admin</a>
+</nav>
+
+
+    <h1>Admin Panel</h1>
+
+    <!-- Section to create a trip -->
+    <section id="create-trip">
+        <h2>Create a Trip</h2>
+        <form id="create-trip">
+            
+            <label for="departure-time">Departure Time:</label>
+            <input type="datetime-local" id="departure-time" name="departureTime" required>
+            
+            <label for="destination">Destination:</label>
+            <input type="text" id="destination" name="destination" required>
+            
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" required>
+            
+            <button id="createbtn">Create Trip</button>
+        </form>
+    </section>
+
+    <!-- Section to cancel a trip -->
+    <section id="cancel-trip">
+        <h2>Cancel a Trip</h2>
+        <form id="delete-trip">
+            <label for="trip-id">Trip ID:</label>
+            <input type="text" id="trip-id" name="tripId" required>
+            
+            <button type="submit" id="cancelbtn">Cancel Trip</button>
+        </form>
+    </section>
+
+<script src="main.js"></script>
+</body>
+</html>
