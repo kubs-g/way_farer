@@ -15,7 +15,7 @@ const signup = () => {
         address: address
     }
   
-fetch("https://wayfarer-production.up.railway.app/register", {
+fetch("http://wayfarer-production.up.railway.app/register", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
@@ -52,7 +52,7 @@ const login = () => {
         email: email,
         password: password
     }
-fetch("https://wayfarer-production.up.railway.app/login", {
+fetch("http://wayfarer-production.up.railway.app/login", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
@@ -113,7 +113,7 @@ const createTripe = () => {
 
     const token = localStorage.getItem("token")?.trim();
 
-    fetch("https://wayfarer-production.up.railway.app/trip", {
+    fetch("http://wayfarer-production.up.railway.app/trip", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${token}`,
@@ -157,7 +157,7 @@ const deleteTrip = () => {
 
     const token = localStorage.getItem("token")?.trim();
 
-    fetch(`https://wayfarer-production.up.railway.app/tripe/${tripId}`, {
+    fetch(`http://wayfarer-production.up.railway.app/tripe/${tripId}`, {
         method: "DELETE",
         headers: {
             "Authorization": `Bearer ${token}`,
@@ -190,7 +190,7 @@ if (deleteTripButton) {
 //fetching trips and displaying them
 const tripecontainer = document.querySelector(".trips");
 
-fetch("https://wayfarer-production.up.railway.app/tripe", {
+fetch("http://wayfarer-production.up.railway.app/tripe", {
     method: "GET",
     headers: {
         "Content-Type": "application/json"
@@ -259,7 +259,7 @@ const bookTrip = (tripId) => {
 
     console.log("Sending booking data:", bookingData); 
 
-    fetch("https://wayfarer-production.up.railway.app/bookings", {
+    fetch("http://wayfarer-production.up.railway.app/bookings", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${token}`,
@@ -303,7 +303,7 @@ const getBookings = () => {
         alert("You need to be logged in to view bookings.");
         return;
     }
-    fetch("https://wayfarer-production.up.railway.app/bookings", {
+    fetch("http://wayfarer-production.up.railway.app/bookings", {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`,
@@ -351,7 +351,7 @@ document.addEventListener("click", (event) => {
 
         const token = localStorage.getItem("token")?.trim();
 
-        fetch(`https://wayfarer-production.up.railway.app/${bookingId}`, {
+        fetch(`http://wayfarer-production.up.railway.app/${bookingId}`, {
             method: "DELETE",
             headers: {
                 "Authorization": `Bearer ${token}`,
