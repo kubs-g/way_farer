@@ -10,9 +10,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const PORT = process.env.PORT;
 const app = express();
-app.use(cors({
-    origin: 'https://kubs-g.github.io' 
-  }));
+app.use(Cors());
 app.use(bodyParser.json());
 app.use(express.json());
 
