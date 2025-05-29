@@ -8,7 +8,7 @@ const multer = require('multer');
 const {isAdmin} = require('./middleware.js');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const PORT = process.env.PORT;
+const port = process.env.PORT ||3000;
 const Path = require('path');
 const app = express();
 const corsOption ={
@@ -28,7 +28,6 @@ let tripedata = [{"id":"1","destination":"Eldoret >>> Nairobi","date":"2023-10-2
 
 let bookingsData = [{"id":"1","userId":"1","tripId":"1","username":"gerry","destination":"Eldoret >>> Nairobi","seatNumber":"1"}]
 
-app.use(express.static(Path.join(__dirname, "public")));
 
 app.get("/",(req,res)=>{
     res.send("hello server is running")
@@ -211,7 +210,6 @@ app.get('/search', (req, res) => {
     res.status(200).json(filteredTrips);
 });
 
-app.listen(PORT , () => {
-    console.log(`Server is running on port ${PORT}`);
-}
-);
+app.listen(port, "0.0.0.0", function () {
+ console.log(`Server is running on port ${port}`)
+  });
