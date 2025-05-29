@@ -9,6 +9,7 @@ const {isAdmin} = require('./middleware.js');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const PORT = process.env.PORT;
+const Path = require('path');
 const app = express();
 const corsOption ={
     origin:'*',
@@ -16,6 +17,7 @@ const corsOption ={
 app.use(Cors(corsOption));
 app.use(bodyParser.json());
 app.use(express.json());
+
 
 let users = [{"id":"1","username":"gerry","email":"kubs@gmail.com","password":bcrypt.hashSync("123456",2),"address":"Nairobi","role":"admin"}]
 
@@ -26,6 +28,11 @@ let tripedata = [{"id":"1","destination":"Eldoret >>> Nairobi","date":"2023-10-2
 
 let bookingsData = [{"id":"1","userId":"1","tripId":"1","username":"gerry","destination":"Eldoret >>> Nairobi","seatNumber":"1"}]
 
+app.use(express.static(Path.join(__dirname, "public")));
+
+app.get("/",(req,res)=>{
+    res.send("hello server is running")
+})
 app.post('/register',(req,res)=>{
  const {username,email,password,address,role = "user"} = req.body;
   
