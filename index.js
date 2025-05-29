@@ -17,6 +17,7 @@ const corsOption ={
 app.use(Cors(corsOption));
 app.use(bodyParser.json());
 app.use(express.json());
+app.use(express.static('public'));
 
 
 let users = [{"id":"1","username":"gerry","email":"kubs@gmail.com","password":bcrypt.hashSync("123456",2),"address":"Nairobi","role":"admin"}]
