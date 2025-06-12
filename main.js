@@ -296,6 +296,7 @@ document.addEventListener("click", (event) => {
 
 const bookings = document.getElementById("bookings-list");
 
+
 const getBookings = () => {
     const token = localStorage.getItem("token")?.trim();
     const username = localStorage.getItem("username")?.trim();
@@ -303,6 +304,7 @@ const getBookings = () => {
         alert("You need to be logged in to view bookings.");
         return;
     }
+   
     fetch("https://wayfarer-production.up.railway.app/bookings", {
         method: "GET",
         headers: {
@@ -318,7 +320,15 @@ const getBookings = () => {
         }
     })
     .then((data) => {
-        data.forEach((booking) => {
+        bookings.innerHTML = ""
+        const userBookings = data.filter((booking) => booking.username === username);
+
+        if (userBookings.length === 0) {
+            bookings.innerHTML = "<p>No bookings found for your account.</p>";
+            return;
+        }
+
+        userBookings.forEach((booking) => {
             const bookingElement = document.createElement("div");
             bookingElement.className = "booking";
             bookingElement.innerHTML = `
@@ -326,9 +336,8 @@ const getBookings = () => {
                 <p>Trip Destination: ${booking.destination}</p>
                 <p>Seat Number: ${booking.seatNumber}</p>
                 <h3>Booking ID: ${booking.id}</h3> 
-                <p>Status:${booking.paid ?'<span style="color:green;">&#10004;Paid</span>':'<span style="color:red;">&#10004; Not yet Paid </span>'}</p>
+                <p>Status: ${booking.paid ? '<span style="color:green;">&#10004; Paid</span>' : '<span style="color:red;">&#10004; Not yet Paid</span>'}</p>
                 <button id="cancel-booking-btn">Cancel Booking</button>
-                
             `;
             bookings.appendChild(bookingElement);
         });
@@ -338,10 +347,15 @@ const getBookings = () => {
     });
 
 }
+document.addEventListener("DOMContentLoaded", () => {
+    const bookings = document.getElementById("bookings-list");
+ if (!bookings) {
+        console.error("Element with ID 'bookings-list' not found in the DOM.");
+        return;
+    }
 
-if (bookings) {
     getBookings();
-}
+});
 
 //cancel-bookings
 document.addEventListener("click", (event) => {
@@ -351,7 +365,7 @@ document.addEventListener("click", (event) => {
 
         const token = localStorage.getItem("token")?.trim();
 
-        fetch(`https://wayfarer-production.up.railway.app/${bookingId}`, {
+        fetch(`https://wayfarer-production.up.railway.app/bookings/${bookingId}`, {
             method: "DELETE",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -377,3 +391,67 @@ document.addEventListener("click", (event) => {
     }
 });
 
+
+
+
+
+
+const searchButton = document.getElementById("search-button");
+
+const searchTrips = () => {
+    const searchInput = document.getElementById("search-input").value.trim();
+
+    if (!searchInput) {
+        alert("Please enter a destination to search.");
+        return;
+    }
+
+    fetch(`https://wayfarer-production.up.railway.app/search?destination=${searchInput}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then((response) => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error("No trips found for the given destination.");
+        }
+    })
+    .then((data) => {
+        const tripecontainer = document.querySelector(".trips");
+        tripecontainer.innerHTML = "";
+
+        data.forEach((tripe) => {
+            const Trip = document.createElement("div");
+            Trip.className = "trip";
+            Trip.setAttribute("data-trip-id", tripe.id);
+            Trip.setAttribute("data-destination", tripe.destination);
+            
+            const isFullyBooked = Array.isArray(tripe.availableSeats) && tripe.availableSeats.length >= 6;
+
+            Trip.innerHTML = `
+                <h3>${tripe.destination}</h3>
+                <p>Date: ${tripe.date}</p>
+                <p>Price: ${tripe.price}</p>
+                <p>${isFullyBooked ? "Fully Booked" : `Available Seats: ${6 - (tripe.availableSeats?.length || 0)}`}</p>
+                <button id="bookbtn" ${isFullyBooked ? "disabled" : ""}>
+                    ${isFullyBooked ? "Fully Booked" : "Book Trip"}
+                </button>
+            `;
+            tripecontainer.appendChild(Trip);
+        }); 
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+        alert(error.message);
+    });
+};
+
+if (searchButton) {
+    searchButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        searchTrips();
+    });
+}

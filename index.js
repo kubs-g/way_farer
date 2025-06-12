@@ -5,7 +5,7 @@ const Cors = require('cors');
 const multer = require('multer');
 
 
-const {isAdmin} = require('./middleware.js');
+const {isAdmin,authenticate} = require('./middleware.js');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const port = process.env.PORT ||3000;
@@ -174,18 +174,9 @@ const availableSeats = bookingsData.filter((booking) => booking.tripId === tripI
 );
 
 app.get('/bookings', (req, res) => {
-    res.status(200).json(bookingsData);
-}); 
-
-
-app.get('/bookings/:id', (req, res) => {
-    const { id } = req.params;
-    const booking = bookingsData.find((booking) => booking.id === id);
-    if (!booking) {
-        return res.status(404).send("Booking not found");
-    }
-    res.status(200).json(booking);
+res.status(200).json(bookingsData);    
 });
+
 
 
 app.delete('/bookings/:id', (req, res) => {
@@ -198,17 +189,22 @@ app.delete('/bookings/:id', (req, res) => {
     res.status(200).send("Booking deleted successfully");
 });
 
-
 app.get('/search', (req, res) => {
     const { destination } = req.query;
-    const filteredTrips = tripedata.filter((trip) =>
-        trip.destination.toLowerCase().includes(destination.toLowerCase())
-    );
-   if(filteredTrips.length === 0){
-        return res.status(404).send("tripe not found");
+
+    if (!destination) {
+        return res.status(400).send("Destination  is required");
     }
-    
-    res.status(200).json(filteredTrips);
+
+    const findTripe = tripedata.filter((tripe) =>
+        tripe.destination.toLowerCase().includes(destination.toLowerCase())
+    );
+
+    if (findTripe.length === 0) {
+        return res.status(404).send("No trips found for the given destination");
+    }
+
+    res.status(200).json(findTripe);
 });
 
 app.listen(port, "0.0.0.0", function () {

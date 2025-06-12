@@ -317,6 +317,58 @@ footer {
     background-color: #a71d2a; 
 }
 
+
+#bookings-list {
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 1rem auto;
+    padding: 1.5rem;
+   text-align: left;
+}
+.booking {
+    
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    max-width: 600px;
+    text-align: left;
+}
+
+
+/* Booking details styling */
+.booking p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.booking h3 {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #007bff;
+}
+
+/* Status styling */
+.booking span {
+    font-weight: bold;
+}
+
+#cancel-booking-btn {
+    margin-top: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #dc3545;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#cancel-booking-btn:hover {
+    background-color: #c82333;
+}
 @media (min-width: 600px) and (max-width: 1024px) {
     nav {
         flex-direction: column;
